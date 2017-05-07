@@ -2,15 +2,24 @@
 
 const pkg = require('./package')
 const OrderedEmitter = require('ordered-emitter')
-const { PassThrough } = require('stream')
+const { Transform } = require('stream')
 const Pusher = require('pusher-js')
 const readOnly = require('read-only-stream')
 const { https } = require('follow-redirects')
 const concat = require('concat-stream')
 const JSONStream = require('JSONStream')
 
+class FilterMeta extends Transform {
+  _transform (chunk, _, done) {
+    chunk = chunk
+      .split('\n')
+      .filter(line => !/^travis_/.test(line.toString()))
+      .join('\n')
+  }
+}
+
 module.exports = ({ jobId, appKey }) => {
-  const s = new PassThrough()
+  const s = new FilterMeta()
   const ordered = new OrderedEmitter()
 
   const finish = () => {
