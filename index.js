@@ -1,12 +1,11 @@
 'use strict'
 
-const got = require('got')
 const pkg = require('./package')
 const OrderedEmitter = require('ordered-emitter')
-const {PassThrough} = require('stream')
+const { PassThrough } = require('stream')
 const Pusher = require('pusher-js')
 const readOnly = require('read-only-stream')
-const {https} = require('follow-redirects')
+const { https } = require('follow-redirects')
 const concat = require('concat-stream')
 const JSONStream = require('JSONStream')
 
@@ -30,18 +29,21 @@ module.exports = ({ jobId, appKey }) => {
     ordered.emit('log', Object.assign(msg, { order: msg.number }))
   })
 
-  https.get({
+  const reqOpts = {
     host: 'api.travis-ci.org',
     path: `/jobs/${jobId}/log`,
     headers: {
       'user-agent': `github.com/juliangruber/travis-log-stream@${pkg.version}`,
       accept: 'application/json; chunked=true; version=2, text/plain; version=2'
     }
-  }, res => {
+  }
+  const req = https.get(reqOpts, res => {
     if (res.headers['content-type'] === 'text/plain') {
-      res.pipe(concat(body => {
-        ordered.emit('log', { order: 0, _log: body, final: true })
-      }))
+      res.pipe(
+        concat(body => {
+          ordered.emit('log', { order: 0, _log: body, final: true })
+        })
+      )
     } else {
       res
         .pipe(JSONStream.parse(['log', 'parts', true]))
@@ -51,8 +53,7 @@ module.exports = ({ jobId, appKey }) => {
         })
     }
   })
-  .on('error', err => s.emit('error', err))
+  req.on('error', err => s.emit('error', err))
 
   return readOnly(s)
 }
-
