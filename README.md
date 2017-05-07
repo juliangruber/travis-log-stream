@@ -16,6 +16,19 @@ logStream({
 }).pipe(process.stdout)
 ```
 
+## Installation
+
+```bash
+$ npm install travis-log-stream
+```
+
+## API
+
+### logStream({ jobId, appKey })
+
+- `jobId`: The travis `job.id`
+- `appKey`: The travis pusher app key, get via `https://apitravis-ci.org/config` (see https://docs.travis-ci.com/api#external-apis)
+
 ## Related projects
 
 - __[travis-logs](https://github.com/juliangruber/travis-logs)__ &mdash; Stream live travis logs of the current commit to your terminal
