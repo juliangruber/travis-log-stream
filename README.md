@@ -16,6 +16,10 @@ logStream({
 }).pipe(process.stdout)
 ```
 
+## Related projects
+
+- __[travis-logs](https://github.com/juliangruber/travis-logs)__ &mdash; Stream live travis logs of the current commit to your terminal
+
 ## License
 
 MIT
