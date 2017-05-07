@@ -3,7 +3,7 @@
 
 Read streaming travis logs, no matter if live or historic.
 
-This will read a job's log from the travis API first, and then if it's still running also continues streaming live log output via the Pusher endpoint.
+This will read a job's log from the travis API first, and then if it's still running also continues streaming live log output via the Pusher endpoint. It also makes sure all the log chunks will arrive in the correct order.
 
 ## Usage
 
